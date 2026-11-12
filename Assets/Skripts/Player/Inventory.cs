@@ -4,8 +4,17 @@ using UnityEngine.InputSystem;
 public class Inventory : MonoBehaviour
 {
     public GameObject[] slots;// Слоты инвентаря
-    public Sprite[] items;// Картинки предметов
-    public GameObject currentSlot;// Выбранный слот
+    private GameObject currentSlot;// Ячейка под рамкой
+    public GameObject currentItem
+    {
+        get
+        {
+            if (currentSlot != null && currentSlot.TryGetComponent(out HotBarSlot slot))
+                return slot.myGameobject;// Берём блок из выбранной ячейки
+            return null;
+        }
+    }
+
     [Range(0, 8)]
     public int currentSlotIndex = 0;// Номер слота с нуля
     private RectTransform selectionFrame;// Рамка выбранного слота

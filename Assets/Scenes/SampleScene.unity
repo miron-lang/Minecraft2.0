@@ -130,6 +130,7 @@ GameObject:
   - component: {fileID: 97906388}
   - component: {fileID: 97906390}
   - component: {fileID: 97906389}
+  - component: {fileID: 97906391}
   m_Layer: 5
   m_Name: Slot7
   m_TagString: Untagged
@@ -195,6 +196,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 97906387}
   m_CullTransparentMesh: 1
+--- !u!114 &97906391
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 97906387}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a913ce82db14814f800290f442a09b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HotBarSlot
+  myGameobject: {fileID: 3823854314199510696, guid: dcf010e8db0100946ab4046e727ed652, type: 3}
+  mySprite: {fileID: 21300000, guid: 07dd6a962e0721944b456f51c40fea56, type: 3}
+  itemImage: {fileID: 97906389}
 --- !u!1 &101724813
 GameObject:
   m_ObjectHideFlags: 0
@@ -206,6 +222,7 @@ GameObject:
   - component: {fileID: 101724814}
   - component: {fileID: 101724816}
   - component: {fileID: 101724815}
+  - component: {fileID: 101724817}
   m_Layer: 5
   m_Name: Slot9
   m_TagString: Untagged
@@ -271,6 +288,96 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 101724813}
   m_CullTransparentMesh: 1
+--- !u!114 &101724817
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 101724813}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a913ce82db14814f800290f442a09b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HotBarSlot
+  myGameobject: {fileID: 3036850599748329621, guid: 58d9d27ca297e994ba6f789633d73b6b, type: 3}
+  mySprite: {fileID: 21300000, guid: d60ab02612737854e9033973897c3cb9, type: 3}
+  itemImage: {fileID: 101724815}
+--- !u!1 &298159077
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 298159078}
+  - component: {fileID: 298159080}
+  - component: {fileID: 298159079}
+  m_Layer: 5
+  m_Name: Image
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &298159078
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 298159077}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 842586931}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 10, y: 10}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &298159079
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 298159077}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &298159080
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 298159077}
+  m_CullTransparentMesh: 1
 --- !u!1 &298531314
 GameObject:
   m_ObjectHideFlags: 0
@@ -321,14 +428,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.19607843}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: 8eb622b780f661140b514eb640de78a9, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -412,7 +519,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 55
+    m_Bits: 119
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -660,14 +767,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.19607843}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: 8eb622b780f661140b514eb640de78a9, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -735,14 +842,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.19607843}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: 8eb622b780f661140b514eb640de78a9, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -810,14 +917,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.19607843}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: 8eb622b780f661140b514eb640de78a9, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -885,14 +992,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.19607843}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: 8eb622b780f661140b514eb640de78a9, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1054,6 +1161,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1281690039}
+  - {fileID: 298159078}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -1072,6 +1180,7 @@ GameObject:
   - component: {fileID: 924127088}
   - component: {fileID: 924127090}
   - component: {fileID: 924127089}
+  - component: {fileID: 924127091}
   m_Layer: 5
   m_Name: Slot2
   m_TagString: Untagged
@@ -1137,6 +1246,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 924127087}
   m_CullTransparentMesh: 1
+--- !u!114 &924127091
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 924127087}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a913ce82db14814f800290f442a09b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HotBarSlot
+  myGameobject: {fileID: 3664412273697726201, guid: 30021bbc2ade8be4a99b785f72dc3e0a, type: 3}
+  mySprite: {fileID: 21300000, guid: 9c2c4eab9172b5e4296c3370c9bdfa47, type: 3}
+  itemImage: {fileID: 924127089}
 --- !u!1 &1055750526
 GameObject:
   m_ObjectHideFlags: 0
@@ -1187,14 +1311,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.19607843}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: 8eb622b780f661140b514eb640de78a9, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1276,6 +1400,7 @@ GameObject:
   - component: {fileID: 1128670311}
   - component: {fileID: 1128670313}
   - component: {fileID: 1128670312}
+  - component: {fileID: 1128670314}
   m_Layer: 5
   m_Name: Slot3
   m_TagString: Untagged
@@ -1341,6 +1466,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1128670310}
   m_CullTransparentMesh: 1
+--- !u!114 &1128670314
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1128670310}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a913ce82db14814f800290f442a09b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HotBarSlot
+  myGameobject: {fileID: 2762503143693557287, guid: 9202776b7383f374799f8ee3ad1af374, type: 3}
+  mySprite: {fileID: 21300000, guid: 253e29980282aa44b8438d92369b55d5, type: 3}
+  itemImage: {fileID: 1128670312}
 --- !u!1 &1158993662
 GameObject:
   m_ObjectHideFlags: 0
@@ -1385,7 +1525,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: e47430bcd4a7b94439919b19c2623784, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1464,6 +1604,7 @@ GameObject:
   - component: {fileID: 1205778646}
   - component: {fileID: 1205778645}
   - component: {fileID: 1205778644}
+  - component: {fileID: 1205778648}
   m_Layer: 3
   m_Name: Player
   m_TagString: Untagged
@@ -1534,20 +1675,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Movement
   walkingSpeed: 7
   runningSpeed: 12
-  mouseSensitivity: 100
+  acceleration: 60
   backwardsMultiplayer: 0.5
   isRunning: 0
-  playerCamera: {fileID: 330585546}
+  head: {fileID: 0}
+  mouseSensitivity: 150
+  firstFace: {fileID: 330585543}
+  thirdFace: {fileID: 1466698718}
   cameraPitch: 0
+  isFirstFace: 1
   jumpForce: 6
   groundCheck: {fileID: 1076147401}
   groundLayer:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 65
   anim: {fileID: 1205778644}
-  firstFace: {fileID: 330585543}
-  thirdFace: {fileID: 1466698718}
-  isFirstFace: 1
 --- !u!4 &1205778647
 Transform:
   m_ObjectHideFlags: 0
@@ -1567,6 +1709,23 @@ Transform:
   - {fileID: 2320389776395066131}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1205778648
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1205778643}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d102c8f979d95964ab1213148c438819, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Building
+  firstCamera: {fileID: 330585545}
+  secondCamera: {fileID: 1466698721}
+  hotBar: {fileID: 1281690040}
+  cameraSkript: {fileID: 1205778646}
+  placeMaxDistance: 4
 --- !u!1 &1281690038
 GameObject:
   m_ObjectHideFlags: 0
@@ -1637,8 +1796,6 @@ MonoBehaviour:
   - {fileID: 97906387}
   - {fileID: 1790883237}
   - {fileID: 101724813}
-  items: []
-  currentSlot: {fileID: 1524336315}
   currentSlotIndex: 0
 --- !u!114 &1281690041
 MonoBehaviour:
@@ -1754,14 +1911,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.19607843}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: 8eb622b780f661140b514eb640de78a9, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1988,13 +2145,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1466698718}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.24024995, y: -0.11387774, z: 0.028392907, w: 0.96358997}
-  m_LocalPosition: {x: 1, y: 0.92, z: -2}
+  m_LocalRotation: {x: 0.24192187, y: 0, z: 0, w: 0.9702957}
+  m_LocalPosition: {x: 0, y: 1, z: -2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2041131877361513674}
-  m_LocalEulerAnglesHint: {x: 28, y: -13.48, z: 0}
+  m_LocalEulerAnglesHint: {x: 28, y: 0, z: 0}
 --- !u!1 &1524336315
 GameObject:
   m_ObjectHideFlags: 0
@@ -2006,6 +2163,7 @@ GameObject:
   - component: {fileID: 1524336316}
   - component: {fileID: 1524336318}
   - component: {fileID: 1524336317}
+  - component: {fileID: 1524336319}
   m_Layer: 5
   m_Name: Slot1
   m_TagString: Untagged
@@ -2071,6 +2229,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1524336315}
   m_CullTransparentMesh: 1
+--- !u!114 &1524336319
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1524336315}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a913ce82db14814f800290f442a09b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HotBarSlot
+  myGameobject: {fileID: 1743947555482946706, guid: 8fa23b414424fd140ab319d5ba6793e9, type: 3}
+  mySprite: {fileID: 21300000, guid: db695d305cd078c4a868397d16694d95, type: 3}
+  itemImage: {fileID: 1524336317}
 --- !u!1 &1766845674
 GameObject:
   m_ObjectHideFlags: 0
@@ -2082,6 +2255,7 @@ GameObject:
   - component: {fileID: 1766845675}
   - component: {fileID: 1766845677}
   - component: {fileID: 1766845676}
+  - component: {fileID: 1766845678}
   m_Layer: 5
   m_Name: Slot4
   m_TagString: Untagged
@@ -2147,6 +2321,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1766845674}
   m_CullTransparentMesh: 1
+--- !u!114 &1766845678
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1766845674}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a913ce82db14814f800290f442a09b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HotBarSlot
+  myGameobject: {fileID: 4804030872642874852, guid: 03092ae485f5ccf4fa5f840f7b2e4fb9, type: 3}
+  mySprite: {fileID: 21300000, guid: 7a688a0fb9f437d4eb927b743dcea67d, type: 3}
+  itemImage: {fileID: 1766845676}
 --- !u!1 &1790883237
 GameObject:
   m_ObjectHideFlags: 0
@@ -2158,6 +2347,7 @@ GameObject:
   - component: {fileID: 1790883238}
   - component: {fileID: 1790883240}
   - component: {fileID: 1790883239}
+  - component: {fileID: 1790883241}
   m_Layer: 5
   m_Name: Slot8
   m_TagString: Untagged
@@ -2223,6 +2413,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1790883237}
   m_CullTransparentMesh: 1
+--- !u!114 &1790883241
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1790883237}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a913ce82db14814f800290f442a09b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HotBarSlot
+  myGameobject: {fileID: 3729389619874524362, guid: f63a461f979cfb146b3d3b0c852c958f, type: 3}
+  mySprite: {fileID: 21300000, guid: 70a777182ecd01b4481054905837399f, type: 3}
+  itemImage: {fileID: 1790883239}
 --- !u!1 &1898402630
 GameObject:
   m_ObjectHideFlags: 0
@@ -2273,14 +2478,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.19607843}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: 8eb622b780f661140b514eb640de78a9, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2348,14 +2553,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.19607843}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: 8eb622b780f661140b514eb640de78a9, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2384,6 +2589,7 @@ GameObject:
   - component: {fileID: 1908452582}
   - component: {fileID: 1908452584}
   - component: {fileID: 1908452583}
+  - component: {fileID: 1908452585}
   m_Layer: 5
   m_Name: Slot6
   m_TagString: Untagged
@@ -2449,6 +2655,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1908452581}
   m_CullTransparentMesh: 1
+--- !u!114 &1908452585
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1908452581}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a913ce82db14814f800290f442a09b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HotBarSlot
+  myGameobject: {fileID: 4719036150287214832, guid: dbe3569d7d801954f9079a3f747b8576, type: 3}
+  mySprite: {fileID: 21300000, guid: 7f9885b4f9c6aaf4e85ee6a73c31341c, type: 3}
+  itemImage: {fileID: 1908452583}
 --- !u!1 &1992518666
 GameObject:
   m_ObjectHideFlags: 0
@@ -2460,6 +2681,7 @@ GameObject:
   - component: {fileID: 1992518667}
   - component: {fileID: 1992518669}
   - component: {fileID: 1992518668}
+  - component: {fileID: 1992518670}
   m_Layer: 5
   m_Name: Slot5
   m_TagString: Untagged
@@ -2525,6 +2747,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1992518666}
   m_CullTransparentMesh: 1
+--- !u!114 &1992518670
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1992518666}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a913ce82db14814f800290f442a09b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HotBarSlot
+  myGameobject: {fileID: 1534541930422049728, guid: b7865e6ff9d0cbf48aaa612d8ad1a2d8, type: 3}
+  mySprite: {fileID: 21300000, guid: 9ffe5ba510c7fbb4385ca0d6be41fea3, type: 3}
+  itemImage: {fileID: 1992518668}
 --- !u!23 &415231500144039987
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -2691,63 +2928,6 @@ Transform:
   - {fileID: 1466698722}
   m_Father: {fileID: 2320389776395066131}
   m_LocalEulerAnglesHint: {x: -0, y: -0.32780394, z: -0.65000004}
---- !u!1001 &2291747833107013902
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 2349003182152373758, guid: 2966571fd73e23c44804c8eefb60b459, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2349003182152373758, guid: 2966571fd73e23c44804c8eefb60b459, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2349003182152373758, guid: 2966571fd73e23c44804c8eefb60b459, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2349003182152373758, guid: 2966571fd73e23c44804c8eefb60b459, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2349003182152373758, guid: 2966571fd73e23c44804c8eefb60b459, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2349003182152373758, guid: 2966571fd73e23c44804c8eefb60b459, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2349003182152373758, guid: 2966571fd73e23c44804c8eefb60b459, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2349003182152373758, guid: 2966571fd73e23c44804c8eefb60b459, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2349003182152373758, guid: 2966571fd73e23c44804c8eefb60b459, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2349003182152373758, guid: 2966571fd73e23c44804c8eefb60b459, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5162948594088542861, guid: 2966571fd73e23c44804c8eefb60b459, type: 3}
-      propertyPath: m_Name
-      value: Cube
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 2966571fd73e23c44804c8eefb60b459, type: 3}
 --- !u!33 &2315720198099178654
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -3259,7 +3439,6 @@ SceneRoots:
   m_Roots:
   - {fileID: 410087041}
   - {fileID: 832575519}
-  - {fileID: 2291747833107013902}
   - {fileID: 1158993666}
   - {fileID: 1205778647}
   - {fileID: 842586931}

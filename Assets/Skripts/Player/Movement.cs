@@ -1,100 +1,97 @@
-using Unity.VisualScripting;
-using UnityEditor.Animations;
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody))]
 public class Movement : MonoBehaviour
 {
-    [Header("Rigid body")]
-    private Rigidbody rb;// Гравитацыя
-
     [Header("Movement settings")]
-    [SerializeField] float walkingSpeed = 10f;// Скорость ходьбы
-    [SerializeField] float runningSpeed = 25f;// Скорость бега
-    [SerializeField] float mouseSensitivity = 100f;// Чувствительность мышки
-    public float backwardsMultiplayer = 0.5f;// Наскоко медлене ходба/бег назад
-    public bool isRunning = false;
+    [SerializeField] float walkingSpeed = 10f;// РЎРєРѕСЂРѕСЃС‚СЊ С…РѕРґСЊР±С‹
+    [SerializeField] float runningSpeed = 25f;// РЎРєРѕСЂРѕСЃС‚СЊ Р±РµРіР°
+    [SerializeField] float acceleration = 60f;// РљР°Рє Р±С‹СЃС‚СЂРѕ РЅР°Р±РёСЂР°РµРј Рё СЃР±СЂР°СЃС‹РІР°РµРј СЃРєРѕСЂРѕСЃС‚СЊ
+    public float backwardsMultiplayer = 0.5f;// РЎРєРѕСЂРѕСЃС‚СЊ РїСЂРё РґРІРёР¶РµРЅРёРё РЅР°Р·Р°Рґ
+    public bool isRunning;
 
     [Header("Camera")]
-    [SerializeField] Transform playerCamera;// Камера
-    public float cameraPitch;// Поворт камеры
+    [SerializeField] Transform head;// Р“РѕР»РѕРІР° РїРµСЂСЃРѕРЅР°Р¶Р°
+    [SerializeField] float mouseSensitivity = 100f;
+    [SerializeField] GameObject firstFace;
+    [SerializeField] GameObject thirdFace;
+    public float cameraPitch;
+    public bool isFirstFace = true;
 
     [Header("Jump settings")]
-    [SerializeField] float jumpForce = 6f;// Сила прыжка
-    [SerializeField] Transform groundCheck;// Точка под ногами
-    [SerializeField] LayerMask groundLayer;// Слой земли
+    [SerializeField] float jumpForce = 6f;// РЎРёР»Р° РїСЂС‹Р¶РєР°
+    [SerializeField] Transform groundCheck;// РўРѕС‡РєР° РїРѕРґ РЅРѕРіР°РјРё
+    [SerializeField] LayerMask groundLayer;
 
     [Header("Animations")]
     [SerializeField] Animator anim;
 
-    [Header("Camera")]
-    [SerializeField] GameObject firstFace;
-    [SerializeField] GameObject thirdFace;
-    public bool isFirstFace = true;
+    private Rigidbody rb;
+    private Vector2 moveInput;
+    private float yaw;
+    private bool jumpRequested;
 
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
+        rb.interpolation = RigidbodyInterpolation.Interpolate;
+        yaw = rb.rotation.eulerAngles.y;
+        if (head == null)
+            head = transform.Find("Torso/Head");
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-
-        cameraPitch = Mathf.DeltaAngle(0f, playerCamera.localEulerAngles.x);
     }
 
     void Update()
     {
+        moveInput = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+        moveInput = Vector2.ClampMagnitude(moveInput, 1f);// Р§С‚РѕР±С‹ РїРѕ РґРёР°РіРѕРЅР°Р»Рё РЅРµ Р±РµРіР°С‚СЊ Р±С‹СЃС‚СЂРµРµ
+        isRunning = Input.GetKey(KeyCode.LeftControl);
+
+        if (Input.GetKeyDown(KeyCode.Space))
+            jumpRequested = true;// Р—Р°РїРѕРјРёРЅР°РµРј РЅР°Р¶Р°С‚РёРµ РґРѕ С€Р°РіР° С„РёР·РёРєРё
+
+        float sensitivity = mouseSensitivity / 100f;
+        yaw += Input.GetAxis("Mouse X") * sensitivity;
+        cameraPitch = Mathf.Clamp(cameraPitch - Input.GetAxis("Mouse Y") * sensitivity, -89f, 89f);
+
         if (Input.GetKeyDown(KeyCode.F5))
         {
             isFirstFace = !isFirstFace;
-            firstFace.SetActive(isFirstFace ? true : false);
-            thirdFace.SetActive(isFirstFace ? false : true);
+            firstFace.SetActive(isFirstFace);
+            thirdFace.SetActive(!isFirstFace);
         }
 
-        float sensitivity = mouseSensitivity / 100f;// Поворот мышкой при чувствительности 100 множитель равен 1
-        float mouseX = Input.GetAxis("Mouse X") * sensitivity;
-        float mouseY = Input.GetAxis("Mouse Y") * sensitivity;
+        bool isMoving = moveInput.sqrMagnitude > 0f;
+        anim.SetBool("Walk", isMoving && !isRunning);
+        anim.SetBool("Run", isMoving && isRunning);
+    }
 
-        transform.Rotate(Vector3.up, mouseX);// Поворот игрока за камерой
+    void LateUpdate()
+    {
+        if (head != null)
+            head.rotation = transform.rotation * Quaternion.Euler(cameraPitch, 0f, 0f);// РџРѕСЃР»Рµ Р°РЅРёРјР°С†РёРё РЅР°РєР»РѕРЅСЏРµРј РіРѕР»РѕРІСѓ РїРѕ X РѕС‚РЅРѕСЃРёС‚РµР»СЊРЅРѕ РёРіСЂРѕРєР°
+    }
 
-        cameraPitch = Mathf.Clamp(cameraPitch - mouseY, -89f, 89f);
-        playerCamera.localRotation = Quaternion.Euler(cameraPitch, 0f, 0f);
+    void FixedUpdate()
+    {
+        Quaternion rotation = Quaternion.Euler(0f, yaw, 0f);
+        rb.MoveRotation(rotation);// Р Р°Р·РІРѕСЂР°С‡РёРІР°РµРј С‚РµР»Рѕ РїРѕ РјС‹С€РєРµ
 
-        if (Input.GetKeyDown(KeyCode.LeftControl))// Если Control нажат, бег включяеца
-        {
-            isRunning = true;
-        }
-        if (Input.GetKeyUp(KeyCode.LeftControl))// Если Control отжат, бег выключяеца
-        {
-            isRunning = false;
-        }
+        float forward = moveInput.y;
+        if (forward < 0f)
+            forward *= backwardsMultiplayer;
 
-        if (Input.GetKey(KeyCode.W))// Вперёд
-        {
-            anim.SetBool(isRunning ? "Run" : "Walk", true);
-            transform.Translate(Vector3.forward * (isRunning ? runningSpeed : walkingSpeed) * Time.deltaTime);
-        }
-        if (Input.GetKey(KeyCode.S))// Назад
-        {
-            anim.SetBool(isRunning ? "Run" : "Walk", true);
-            transform.Translate(-Vector3.forward * (isRunning ? runningSpeed : walkingSpeed) * Time.deltaTime);
-        }
-        if (Input.GetKey(KeyCode.A))// Налего
-        {
-            anim.SetBool(isRunning ? "Run" : "Walk", true);
-            transform.Translate(Vector3.left * (isRunning ? runningSpeed : walkingSpeed) * Time.deltaTime);
-        }
-        if (Input.GetKey(KeyCode.D))// Направо
-        {
-            anim.SetBool(isRunning ? "Run" : "Walk", true);
-            transform.Translate(Vector3.right * (isRunning ? runningSpeed : walkingSpeed) * Time.deltaTime);
-        }
+        float speed = isRunning ? runningSpeed : walkingSpeed;
+        Vector3 targetVelocity = rotation * new Vector3(moveInput.x, 0f, forward) * speed;
+        Vector3 velocityChange = targetVelocity - rb.linearVelocity;
+        velocityChange.y = 0f;// Р’С‹СЃРѕС‚Сѓ РјРµРЅСЏСЋС‚ РіСЂР°РІРёС‚Р°С†РёСЏ Рё РїСЂС‹Р¶РѕРє
+        rb.AddForce(Vector3.ClampMagnitude(velocityChange, acceleration * Time.fixedDeltaTime), ForceMode.VelocityChange);
 
-        if (Input.GetKeyDown(KeyCode.Space))// Если пробел нажат
-        {
-            if (Physics.CheckSphere(groundCheck.position, 0.1f, groundLayer, QueryTriggerInteraction.Ignore))// Если под ногами земля
-            {
-                rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);// Прыгаем вверх
-            }
-        }
+        if (jumpRequested && Physics.CheckSphere(groundCheck.position, 0.1f, groundLayer, QueryTriggerInteraction.Ignore))
+            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+
+        jumpRequested = false;
     }
 }
