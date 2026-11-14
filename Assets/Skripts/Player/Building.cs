@@ -38,12 +38,18 @@ public class Building : MonoBehaviour
         if (currentBlock == null || !TryHit(out RaycastHit hit))
             return;
 
-        Vector3 blockPosition = Vector3Int.RoundToInt(hit.point + hit.normal * 0.5f);// Клетка за гранью
+        Vector3 face = Vector3Int.RoundToInt(hit.normal);
+        // На ребре берём клетку самого блока, а затем ровно один шаг через выбранную грань
+        Vector3 blockPosition = hit.collider.gameObject.layer == LayerMask.NameToLayer("block")
+            ? Vector3Int.RoundToInt(hit.collider.bounds.center) + face
+            : Vector3Int.RoundToInt(hit.point + face * 0.5f);
         Vector3 halfSize = Vector3.one * 0.499f;// Чтобы соседние блоки могли касаться гранями
         if (Physics.CheckBox(blockPosition, halfSize, Quaternion.identity, Physics.AllLayers, QueryTriggerInteraction.Ignore))
             return;// В клетке уже есть игрок или другой блок
 
-        Instantiate(currentBlock, blockPosition, Quaternion.identity);
+        Vector3 forward = face.y == 0f ? Vector3.up : Vector3.forward;
+        Quaternion rotation = Quaternion.LookRotation(forward, face);// Низ нового блока прилегает к выбранной грани
+        Instantiate(currentBlock, blockPosition, rotation);
     }
 
     void BrokeBlock()
