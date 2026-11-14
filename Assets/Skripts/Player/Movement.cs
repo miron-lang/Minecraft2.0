@@ -42,6 +42,8 @@ public class Movement : MonoBehaviour
     private const float CrouchingHeight = 1.5f;// Высота хитбокса с зажатым Shift
     private float crouchDistance;
     private const float EdgeInset = 0.02f;// Сколько подошвы оставляем на краю
+    private Vector3 sneakProbeHalf;
+    private static readonly Quaternion DiagonalProbe = Quaternion.Euler(0f, 45f, 0f);
     private int solidLayers;
     private Transform cameraPivot;
     private Vector3 standingPivot;
@@ -80,6 +82,11 @@ public class Movement : MonoBehaviour
         bodyBox = GetComponent<BoxCollider>();
         standingSize = bodyBox.size;
         standingCenter = bodyBox.center;
+        // Вписываем два квадрата в круг вокруг оси игрока. При развороте он остаётся внутри подошвы
+        float radius = Mathf.Min(standingSize.x * 0.5f - Mathf.Abs(standingCenter.x),
+            standingSize.z * 0.5f - Mathf.Abs(standingCenter.z));
+        float extent = Mathf.Max(0.001f, radius - EdgeInset) / Mathf.Sqrt(2f);
+        sneakProbeHalf = new Vector3(extent, 0.002f, extent);
         crouchDistance = Mathf.Max(0f, standingSize.y - CrouchingHeight);
         groundBox = groundCheck.GetComponent<BoxCollider>();
         groundBox.isTrigger = true;// Датчик видит пол, но не держит игрока на весу
@@ -216,7 +223,7 @@ public class Movement : MonoBehaviour
             groundBox.enabled && groundBox.gameObject.activeInHierarchy && HasSupport(rb.position, rb.rotation);
         bool canJump = jumpBuffer > 0f && grounded;
         if (isCrouching && grounded && !canJump)
-            nextVelocity = StayOnBlock(rotation, Vector3.ClampMagnitude(nextVelocity, crouchingSpeed));
+            nextVelocity = StayOnBlock(Vector3.ClampMagnitude(nextVelocity, crouchingSpeed));
         rb.AddForce(nextVelocity - velocity, ForceMode.VelocityChange);
 
         if (canJump)
@@ -233,25 +240,35 @@ public class Movement : MonoBehaviour
 
     bool HasSupport(Vector3 position, Quaternion rotation)
     {
-        // По высоте проверяем зону groundCheck, по ширине — реальную подошву игрока
+        // Текущая опора — вся подошва, даже если Shift зажали на самом краю
+        Vector3 half = new Vector3(standingSize.x * 0.5f, 0.002f, standingSize.z * 0.5f);
+        return FloorUnder(position + rotation * standingCenter, half, rotation);
+    }
+
+    bool FloorUnder(Vector3 start, Vector3 half, Quaternion rotation)
+    {
         Bounds sensor = groundBox.bounds;
-        Vector3 start = position + rotation * standingCenter;
         start.y = sensor.max.y + Physics.defaultContactOffset;
-        Vector3 half = new Vector3(standingSize.x * 0.5f - EdgeInset, 0.002f, standingSize.z * 0.5f - EdgeInset);
         return Physics.BoxCast(start, half, Vector3.down, out RaycastHit hit, rotation,
             start.y - sensor.min.y, groundLayer, QueryTriggerInteraction.Ignore) && hit.normal.y >= 0.7f;
     }
 
-    Vector3 StayOnBlock(Quaternion rotation, Vector3 velocity)
+    bool CanSneakTo(Vector3 position)
+    {
+        return FloorUnder(position, sneakProbeHalf, Quaternion.identity) ||
+            FloorUnder(position, sneakProbeHalf, DiagonalProbe);
+    }
+
+    Vector3 StayOnBlock(Vector3 velocity)
     {
         Vector3 step = velocity * Time.fixedDeltaTime;
-        if (HasSupport(rb.position + step, rotation))
+        if (CanSneakTo(rb.position + step))
             return velocity;
 
         // У края можно идти вдоль него, в том числе по диагонали
-        if (step.x != 0f && HasSupport(rb.position + Vector3.right * step.x, rotation))
+        if (step.x != 0f && CanSneakTo(rb.position + Vector3.right * step.x))
             return Vector3.right * velocity.x;
-        if (step.z != 0f && HasSupport(rb.position + Vector3.forward * step.z, rotation))
+        if (step.z != 0f && CanSneakTo(rb.position + Vector3.forward * step.z))
             return Vector3.forward * velocity.z;
         return Vector3.zero;
     }
