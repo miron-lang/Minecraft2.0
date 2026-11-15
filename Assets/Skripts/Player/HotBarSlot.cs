@@ -3,7 +3,10 @@ using UnityEngine.UI;
 
 public class HotBarSlot : MonoBehaviour
 {
-    public GameObject myGameobject;// Какой блок лежит в слоте
+    [Header("Item")]
+    public GameObject myGameobject;// Блок в слоте
+
+    [Header("Icon")]
     public Sprite mySprite;// Картинка этого блока
     [SerializeField] Image itemImage;// Картинка Item внутри слота
 
@@ -23,6 +26,6 @@ public class HotBarSlot : MonoBehaviour
             return;
 
         itemImage.sprite = mySprite;
-        itemImage.enabled = mySprite != null;// Если картинки нет, прячем её
+        itemImage.enabled = mySprite != null;// Пустой слот без картинки
     }
 }

@@ -3,14 +3,14 @@ using UnityEngine;
 
 public class PixelTextureImporter : AssetPostprocessor
 {
-    public override uint GetVersion() => 1;// Unity переимпортирует текстуры при смене версии правила
+    public override uint GetVersion() => 1;// Версия настроек текстур
 
-    void OnPreprocessTexture()
+    void OnPreprocessTexture()// Настройки текстуры при импорте
     {
         if (!assetPath.StartsWith("Assets/", System.StringComparison.Ordinal))
             return;
 
         var importer = (TextureImporter)assetImporter;
-        importer.filterMode = FilterMode.Point;// Всегда оставляем чёткие пиксели
+        importer.filterMode = FilterMode.Point;// Пиксели без размытия
     }
 }

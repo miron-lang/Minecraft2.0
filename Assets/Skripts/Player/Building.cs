@@ -1,15 +1,19 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-[DefaultExecutionOrder(100)]// Луч идёт после поворота головы
+[DefaultExecutionOrder(100)]
 public class Building : MonoBehaviour
 {
-    [SerializeField] Camera firstCamera;
-    [SerializeField] Camera secondCamera;
-    [SerializeField] Inventory hotBar;
+    [Header("Camera")]
+    [SerializeField] Camera firstCamera;// Камера от первого лица
+    [SerializeField] Camera secondCamera;// Камера от третьего лица
     [SerializeField] Movement cameraSkript;
 
-    public float placeMaxDistance = 4f;
+    [Header("Hotbar")]
+    [SerializeField] Inventory hotBar;// Хотбар игрока
+
+    [Header("Building")]
+    public float placeMaxDistance = 4f;// Дальность установки блока
     private int placeMask;
 
     void Awake()
@@ -20,7 +24,7 @@ public class Building : MonoBehaviour
         placeMask = Physics.DefaultRaycastLayers & ~LayerMask.GetMask("Player");// Луч проходит сквозь игрока
     }
 
-    void LateUpdate()// Хотбар и камера уже обновились
+    void LateUpdate()
     {
         if (Mouse.current != null && Mouse.current.rightButton.wasPressedThisFrame)// Правоя кнопка миши нажата
             PlaceBlock();
@@ -29,7 +33,7 @@ public class Building : MonoBehaviour
             BrokeBlock();
     }
 
-    void PlaceBlock()
+    void PlaceBlock()// Ставим выбранный блок
     {
         if (hotBar == null)
             return;
@@ -39,26 +43,25 @@ public class Building : MonoBehaviour
             return;
 
         Vector3 face = Vector3Int.RoundToInt(hit.normal);
-        // На ребре берём клетку самого блока, а затем ровно один шаг через выбранную грань
         Vector3 blockPosition = hit.collider.gameObject.layer == LayerMask.NameToLayer("block")
             ? Vector3Int.RoundToInt(hit.collider.bounds.center) + face
-            : Vector3Int.RoundToInt(hit.point + face * 0.5f);
-        Vector3 halfSize = Vector3.one * 0.499f;// Чтобы соседние блоки могли касаться гранями
+            : Vector3Int.RoundToInt(hit.point + face * 0.5f);// Клетка за выбранной гранью
+        Vector3 halfSize = Vector3.one * 0.499f;// Чуть меньше половины блока
         if (Physics.CheckBox(blockPosition, halfSize, Quaternion.identity, Physics.AllLayers, QueryTriggerInteraction.Ignore))
             return;// В клетке уже есть игрок или другой блок
 
         Vector3 forward = face.y == 0f ? Vector3.up : Vector3.forward;
-        Quaternion rotation = Quaternion.LookRotation(forward, face);// Низ нового блока прилегает к выбранной грани
+        Quaternion rotation = Quaternion.LookRotation(forward, face);// Поворот блока по стороне
         Instantiate(currentBlock, blockPosition, rotation);
     }
 
-    void BrokeBlock()
+    void BrokeBlock()// Ломаем блок под прицелом
     {
         if (TryHit(out RaycastHit hit) && hit.collider.gameObject.layer == LayerMask.NameToLayer("block"))
-            Destroy(hit.collider.gameObject);// Убираем блок под прицелом
+            Destroy(hit.collider.gameObject);
     }
 
-    bool TryHit(out RaycastHit hit)
+    bool TryHit(out RaycastHit hit)// Куда смотрит игрок
     {
         hit = default;
         if (cameraSkript == null)
@@ -68,7 +71,7 @@ public class Building : MonoBehaviour
         if (activeCamera == null)
             return false;
 
-        Physics.SyncTransforms();// Учитываем движение игрока в этом кадре
+        Physics.SyncTransforms();
         Ray ray = activeCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
         Vector3 eyes = firstCamera != null ? firstCamera.transform.position : ray.origin;
         float rayLength = Vector3.Distance(ray.origin, eyes) + placeMaxDistance;
@@ -77,7 +80,7 @@ public class Building : MonoBehaviour
         {
             if (target.distance < closest && !target.collider.transform.IsChildOf(cameraSkript.transform))
             {
-                hit = target;// Пропускаем и части игрока, которым не назначили слой Player
+                hit = target;// Ближайший блок под прицелом
                 closest = target.distance;
             }
         }

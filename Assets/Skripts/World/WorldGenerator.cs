@@ -13,7 +13,10 @@ public class WorldGenerator : MonoBehaviour
 
     [Header("Evry")]
     public GameObject stone;
+    public GameObject deepslate;
     public GameObject bedrock;
+    public GameObject andesite;
+    public GameObject tuff;
 
     [Header("World size")]
     public int xSize = 258;// Рамземер мира по x
@@ -53,11 +56,17 @@ public class WorldGenerator : MonoBehaviour
                 GameObject surface = isDesert ? sand : grassBlock;// Настройки зависимые от биома
                 GameObject underGround = isDesert ? sandStone : dirt;// Настройки зависимые от биома
 
-                SpawnBloks(surface, x, hight, z);
+                SpawnBloks(surface, x, hight, z);// Начяло ставление блоков
                 SpawnBloks(underGround, x, hight - 1, z);
                 SpawnBloks(underGround, x, hight - 2, z);
                 SpawnBloks(stone, x, hight - 3, z);
-                SpawnBloks(bedrock, x, hight - 4, z);
+                SpawnBloks(stone, x, hight - 4, z);
+                SpawnBloks(Random.Range(0, 4) == 3 ? andesite : stone, x, hight - 5, z);
+                SpawnBloks(Random.Range(0, 3) == 2 ? tuff : deepslate, x, hight - 6, z);
+                SpawnBloks(deepslate, x, hight - 7, z);
+                SpawnBloks(deepslate, x, hight - 8, z);
+                SpawnBloks(deepslate, x, hight - 9, z);
+                SpawnBloks(bedrock, x, hight - 10, z);// Канец ставление блоков
             }
         }
     }

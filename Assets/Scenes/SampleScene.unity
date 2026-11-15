@@ -337,9 +337,12 @@ MonoBehaviour:
   grassBlock: {fileID: 748554284636780693, guid: a7f54e2f4e0b2e04b8a7e48b740f862f, type: 3}
   dirt: {fileID: 1314332513397140968, guid: 85ab33d42b565594596793bdf90cd5f3, type: 3}
   stone: {fileID: 1331989590216778126, guid: f43384bf9a686ba4694e5b842e4cd209, type: 3}
+  deepslate: {fileID: 6511303766524954177, guid: 91088be3ca15fd94ab2873a44df4379f, type: 3}
   bedrock: {fileID: 1743947555482946706, guid: 8fa23b414424fd140ab319d5ba6793e9, type: 3}
-  xSize: 258
-  zSize: 258
+  andesite: {fileID: 3504676949410126884, guid: 82aa4fa0f1f2b7b48a839d671f8501f4, type: 3}
+  tuff: {fileID: 4812725082677434268, guid: 7e1ac5919a80b774fa5b0aa4e62bbf4a, type: 3}
+  xSize: 128
+  zSize: 128
 --- !u!4 &292901651
 Transform:
   m_ObjectHideFlags: 0

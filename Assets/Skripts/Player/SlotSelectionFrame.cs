@@ -3,9 +3,9 @@ using UnityEngine.UI;
 
 public class SlotSelectionFrame : MaskableGraphic
 {
-    public const float BorderWidth = 3f;// Насколько рамка выходит за слот
+    public const float BorderWidth = 3f;// Ширина рамки
 
-    protected override void OnPopulateMesh(VertexHelper mesh)
+    protected override void OnPopulateMesh(VertexHelper mesh)// Рисуем рамку слота
     {
         mesh.Clear();
         Rect rect = GetPixelAdjustedRect();
@@ -18,7 +18,7 @@ public class SlotSelectionFrame : MaskableGraphic
         AddRing(mesh, rect, edge, new Color32(95, 95, 95, 255));// Тень внутри рамки
     }
 
-    private static Rect AddRing(VertexHelper mesh, Rect outer, float width, Color32 color)
+    private static Rect AddRing(VertexHelper mesh, Rect outer, float width, Color32 color)// Полоска по краю рамки
     {
         Rect inner = Rect.MinMaxRect(outer.xMin + width, outer.yMin + width,
             outer.xMax - width, outer.yMax - width);

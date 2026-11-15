@@ -1,50 +1,57 @@
+using System.Collections.Generic;
+using Unity.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(Rigidbody))]
 public class Movement : MonoBehaviour
 {
+    [Header("Rigid body")]
+    private Rigidbody rb;// Физика игрока
+    private BoxCollider bodyBox;// Хитбокс игрока
+    private int bodyId;
+    private int blockLayer;
+    private Collider[] nearbyBlocks = new Collider[96];
+    private readonly Dictionary<int, Vector3Int> blockPositions = new Dictionary<int, Vector3Int>();
+    private readonly HashSet<Vector3Int> filledCells = new HashSet<Vector3Int>();// Клетки с целыми блоками
+
     [Header("Movement settings")]
     [SerializeField] float walkingSpeed = 4.3f;// Скорость ходьбы
     [SerializeField] float runningSpeed = 5.6f;// Скорость бега
-    [SerializeField] float crouchingSpeed = 1.4f;// Скорость с зажатым Shift
-    [SerializeField] float acceleration = 60f;// Как быстро набираем и сбрасываем скорость
-    [Range(0f, 1f)] public float backwardsMultiplayer = 0.8f;// Доля скорости при движении назад
+    [SerializeField] float acceleration = 60f;// Разгон игрока
+    [Range(0f, 1f)] public float backwardsMultiplayer = 0.8f;// Наскоко медлене ходба/бег назад
     public bool isRunning;
-
-    [Header("Camera")]
-    [SerializeField] Transform head;// Голова персонажа
-    [SerializeField] float mouseSensitivity = 100f;
-    [SerializeField] GameObject firstFace;
-    [SerializeField] GameObject thirdFace;
-    public float cameraPitch;
-    public bool isFirstFace = true;
+    private Vector2 moveInput;
+    [SerializeField, HideInInspector] bool balanceUpdated;
 
     [Header("Jump settings")]
-    [SerializeField] float jumpForce = 5f;// Хватает, чтобы запрыгнуть на один блок
-    [SerializeField, HideInInspector] bool balanceUpdated;
+    [SerializeField] float jumpForce = 5f;// Сила прыжка
     [SerializeField] Transform groundCheck;// Точка под ногами
-    [SerializeField] LayerMask groundLayer;
-
-    [Header("Animations")]
-    [SerializeField] Animator anim;
-
-    private Rigidbody rb;
-    private Vector2 moveInput;
-    private float yaw;
+    [SerializeField] LayerMask groundLayer;// Слой земли
+    private BoxCollider groundBox;
     private float jumpBuffer;
+
+    [Header("Crouch settings")]
+    [SerializeField] float crouchingSpeed = 1.4f;// Скорость на Shift
     private bool crouchHeld;
     private bool isCrouching;
-    private BoxCollider bodyBox;
-    private BoxCollider groundBox;
     private Vector3 standingSize;
     private Vector3 standingCenter;
-    private const float CrouchingHeight = 1.5f;// Высота хитбокса с зажатым Shift
+    private const float CrouchingHeight = 1.5f;// Высота сидя
     private float crouchDistance;
-    private const float EdgeInset = 0.02f;// Сколько подошвы оставляем на краю
+    private const float EdgeInset = 0.02f;// Отступ от края блока
     private Vector3 sneakProbeHalf;
     private static readonly Quaternion DiagonalProbe = Quaternion.Euler(0f, 45f, 0f);
     private int solidLayers;
+
+    [Header("Camera")]
+    [SerializeField] Transform head;// Голова игрока
+    [SerializeField] float mouseSensitivity = 100f;// Чувствительность мышки
+    [SerializeField] GameObject firstFace;// Вид от первого лица
+    [SerializeField] GameObject thirdFace;// Вид от третьего лица
+    public float cameraPitch;// Наклон камеры
+    public bool isFirstFace = true;
+    private float yaw;
     private Transform cameraPivot;
     private Vector3 standingPivot;
     private float crouchDrop;
@@ -53,17 +60,19 @@ public class Movement : MonoBehaviour
     private float thirdCameraDistance;
     private int cameraMask;
 
+    [Header("Animations")]
+    [SerializeField] Animator anim;
+
     void OnValidate()
     {
         ApplySavedBalance();
     }
 
-    void ApplySavedBalance()
+    void ApplySavedBalance()// Обновляем старые скорости и прыжок
     {
         if (balanceUpdated)
             return;
 
-        // Один раз обновляем старые значения, сохранённые в Inspector
         if (walkingSpeed == 7f) walkingSpeed = 4.3f;
         if (runningSpeed == 12f) runningSpeed = 5.6f;
         if (backwardsMultiplayer == 0.5f) backwardsMultiplayer = 0.8f;
@@ -75,28 +84,29 @@ public class Movement : MonoBehaviour
     {
         ApplySavedBalance();
         rb = GetComponent<Rigidbody>();
-        rb.centerOfMass = Vector3.zero;// Анимация рук и ног не должна сдвигать тело у края
-        rb.constraints |= RigidbodyConstraints.FreezeRotation;// Контакты не разворачивают игрока, поворот задаёт мышь
+        rb.centerOfMass = Vector3.zero;
+        rb.constraints |= RigidbodyConstraints.FreezeRotation;// Чтобы игрок не заваливался
         rb.interpolation = RigidbodyInterpolation.Interpolate;
         rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
         bodyBox = GetComponent<BoxCollider>();
+        bodyId = bodyBox.GetInstanceID();
+        bodyBox.hasModifiableContacts = true;
+        blockLayer = LayerMask.GetMask("block");
         standingSize = bodyBox.size;
         standingCenter = bodyBox.center;
-        // Вписываем два квадрата в круг вокруг оси игрока. При развороте он остаётся внутри подошвы
         float radius = Mathf.Min(standingSize.x * 0.5f - Mathf.Abs(standingCenter.x),
             standingSize.z * 0.5f - Mathf.Abs(standingCenter.z));
         float extent = Mathf.Max(0.001f, radius - EdgeInset) / Mathf.Sqrt(2f);
-        sneakProbeHalf = new Vector3(extent, 0.002f, extent);
+        sneakProbeHalf = new Vector3(extent, 0.002f, extent);// Проверка края на Shift
         crouchDistance = Mathf.Max(0f, standingSize.y - CrouchingHeight);
         groundBox = groundCheck.GetComponent<BoxCollider>();
-        groundBox.isTrigger = true;// Датчик видит пол, но не держит игрока на весу
+        groundBox.isTrigger = true;// Триггер под ногами
         solidLayers = Physics.AllLayers & ~(1 << gameObject.layer);
         yaw = rb.rotation.eulerAngles.y;
         if (head == null)
             head = transform.Find("Torso/Head");
 
-        // Обе камеры следуют за игроком, а покачивание костей остаётся на модели
-        cameraPivot = new GameObject("Camera Pivot").transform;
+        cameraPivot = new GameObject("Camera Pivot").transform;// Точка поворота камер
         cameraPivot.SetParent(transform, false);
         standingPivot = transform.InverseTransformPoint(firstFace.transform.parent.position);
         cameraPivot.localPosition = standingPivot;
@@ -111,22 +121,99 @@ public class Movement : MonoBehaviour
         Cursor.visible = false;
     }
 
+    void OnEnable()
+    {
+        Physics.ContactModifyEvent += CheckBlockContacts;
+        Physics.ContactModifyEventCCD += CheckFastBlockContacts;
+    }
+
+    void OnDisable()
+    {
+        Physics.ContactModifyEvent -= CheckBlockContacts;
+        Physics.ContactModifyEventCCD -= CheckFastBlockContacts;
+    }
+
+    void FindNearbyBlocks()// Целые блоки вокруг игрока
+    {
+        Bounds area = bodyBox.bounds;
+        area.Encapsulate(new Bounds(area.center + rb.linearVelocity * Time.fixedDeltaTime, area.size));
+        area.Expand(2.2f);// По одному соседнему блоку с каждой стороны
+        int count = Physics.OverlapBoxNonAlloc(area.center, area.extents, nearbyBlocks, Quaternion.identity, blockLayer, QueryTriggerInteraction.Ignore);
+        while (count == nearbyBlocks.Length)
+        {
+            System.Array.Resize(ref nearbyBlocks, count * 2);
+            count = Physics.OverlapBoxNonAlloc(area.center, area.extents, nearbyBlocks, Quaternion.identity, blockLayer, QueryTriggerInteraction.Ignore);
+        }
+
+        blockPositions.Clear();
+        filledCells.Clear();
+        for (int i = 0; i < count; i++)
+        {
+            if (!(nearbyBlocks[i] is BoxCollider box) || box.attachedRigidbody != null)
+                continue;
+            Bounds bounds = box.bounds;
+            Vector3Int cell = Vector3Int.RoundToInt(bounds.center);
+            if ((bounds.size - Vector3.one).sqrMagnitude > 0.000001f || (bounds.center - (Vector3)cell).sqrMagnitude > 0.000001f)
+                continue;
+            blockPositions[box.GetInstanceID()] = cell;
+            filledCells.Add(cell);
+        }
+    }
+
+    void CheckBlockContacts(PhysicsScene scene, NativeArray<ModifiableContactPair> pairs)
+    {
+        SkipInsideFaces(pairs, 1f);
+    }
+
+    void CheckFastBlockContacts(PhysicsScene scene, NativeArray<ModifiableContactPair> pairs)
+    {
+        SkipInsideFaces(pairs, -1f);// При быстром столкновении нормаль обратная
+    }
+
+    void SkipInsideFaces(NativeArray<ModifiableContactPair> pairs, float sign)// Пропускаем стыки двух блоков
+    {
+        foreach (var pair in pairs)
+        {
+            bool playerFirst = pair.colliderInstanceID == bodyId;
+            if (!playerFirst && pair.otherColliderInstanceID != bodyId)
+                continue;
+            int blockId = playerFirst ? pair.otherColliderInstanceID : pair.colliderInstanceID;
+            if (!blockPositions.TryGetValue(blockId, out Vector3Int cell))
+                continue;
+            float direction = playerFirst ? sign : -sign;
+            for (int i = 0; i < pair.contactCount; i++)
+            {
+                Vector3 normal = pair.GetNormal(i) * direction;
+                if (normal.x != 0f && filledCells.Contains(cell + (normal.x > 0f ? Vector3Int.right : Vector3Int.left)))
+                    normal.x = 0f;
+                if (normal.y != 0f && filledCells.Contains(cell + (normal.y > 0f ? Vector3Int.up : Vector3Int.down)))
+                    normal.y = 0f;
+                if (normal.z != 0f && filledCells.Contains(cell + (normal.z > 0f ? Vector3Int.forward : Vector3Int.back)))
+                    normal.z = 0f;
+                if (normal.sqrMagnitude < 0.0001f)
+                    pair.IgnoreContact(i);
+                else if (normal.sqrMagnitude < 0.99999f)
+                    pair.SetNormal(i, normal.normalized * direction);// Вдоль стены игрок скользит вниз
+            }
+        }
+    }
+
     void Update()
     {
         moveInput = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
-        moveInput = Vector2.ClampMagnitude(moveInput, 1f);// Чтобы по диагонали не бегать быстрее
+        moveInput = Vector2.ClampMagnitude(moveInput, 1f);// Та же скорость по диагонали
         var keyboard = Keyboard.current;
         crouchHeld = Input.GetKey(KeyCode.LeftShift) || (keyboard != null && keyboard.leftShiftKey.isPressed);
         isRunning = !isCrouching && keyboard != null && keyboard.leftCtrlKey.isPressed;
 
-        if (Input.GetKeyDown(KeyCode.Space) || (keyboard != null && keyboard.spaceKey.wasPressedThisFrame))
-            jumpBuffer = 0.12f;// При нажатии перед касанием земли прыгаем после приземления
+        if (Input.GetKeyDown(KeyCode.Space) || (keyboard != null && keyboard.spaceKey.wasPressedThisFrame))// Если пробел нажат
+            jumpBuffer = 0.12f;// Время на прыжок перед приземлением
 
         float sensitivity = mouseSensitivity / 100f;
         yaw += Input.GetAxis("Mouse X") * sensitivity;
         cameraPitch = Mathf.Clamp(cameraPitch - Input.GetAxis("Mouse Y") * sensitivity, -89f, 89f);
 
-        if (Input.GetKeyDown(KeyCode.F5))
+        if (Input.GetKeyDown(KeyCode.F5))// Смена камеры
         {
             isFirstFace = !isFirstFace;
             firstFace.SetActive(isFirstFace);
@@ -146,13 +233,13 @@ public class Movement : MonoBehaviour
         crouchDrop = Mathf.MoveTowards(crouchDrop, isCrouching ? crouchDistance : 0f, 2.2f * Time.deltaTime);
         cameraPivot.localPosition = standingPivot + Vector3.down * crouchDrop;
         if (head != null)
-            head.rotation = cameraPivot.rotation;// Голова смотрит туда же, куда и камера
+            head.rotation = cameraPivot.rotation;// Поворот головы за камерой
 
         if (!isFirstFace && thirdCamera != null)
             UpdateThirdCamera();
     }
 
-    void UpdateThirdCamera()
+    void UpdateThirdCamera()// Камера от третьего лица
     {
         Transform mount = thirdCamera.transform;
         Vector3 eyes = firstFace.transform.position;
@@ -162,8 +249,7 @@ public class Movement : MonoBehaviour
         float halfHeight = near * Mathf.Tan(thirdCamera.fieldOfView * 0.5f * Mathf.Deg2Rad);
         Vector3 halfScreen = new Vector3(halfHeight * thirdCamera.aspect, halfHeight, 0.01f);
 
-        // Проверяем всю ближнюю плоскость камеры, в том числе её углы
-        Vector3 planeStart = eyes + mount.forward * near;
+        Vector3 planeStart = eyes + mount.forward * near;// Центр ближней плоскости камеры
         float fullDistance = offset.magnitude;
         if (fullDistance < 0.001f)
             return;
@@ -174,37 +260,35 @@ public class Movement : MonoBehaviour
         else if (Physics.BoxCast(planeStart, halfScreen, direction, out RaycastHit hit, mount.rotation, distance, cameraMask, QueryTriggerInteraction.Ignore))
             distance = Mathf.Max(0f, hit.distance - 0.02f);
 
-        // Сам корпус камеры тоже остаётся перед стеной
         if (distance > 0f && Physics.SphereCast(eyes, 0.05f, direction, out RaycastHit bodyHit, distance, cameraMask, QueryTriggerInteraction.Ignore))
             distance = Mathf.Max(0f, bodyHit.distance - 0.02f);
-        // Перед стеной придвигаем сразу, на свободное место возвращаем плавно
-        thirdCameraDistance = Mathf.Min(distance, thirdCameraDistance + 12f * Time.deltaTime);
+        thirdCameraDistance = Mathf.Min(distance, thirdCameraDistance + 12f * Time.deltaTime);// Плавно отдаляем камеру
         mount.localPosition = Vector3.Lerp(firstFace.transform.localPosition, thirdCameraHome, thirdCameraDistance / fullDistance);
     }
 
-    void UpdateCrouch(Quaternion rotation)
+    void UpdateCrouch(Quaternion rotation)// Высота игрока на Shift
     {
         if (crouchHeld == isCrouching)
             return;
         if (!crouchHeld && crouchDistance > 0.002f)
         {
-            // При вставании проверяем только пространство над головой
             Vector3 top = standingCenter + Vector3.up * ((standingSize.y - crouchDistance) * 0.5f);
             Vector3 half = new Vector3(standingSize.x, crouchDistance, standingSize.z) * 0.5f - Vector3.one * 0.001f;
             if (Physics.CheckBox(rb.position + rotation * top, half, rotation, solidLayers, QueryTriggerInteraction.Ignore))
-                return;
+                return;// Над головой блок
         }
         isCrouching = crouchHeld;
         float drop = isCrouching ? crouchDistance : 0f;
         bodyBox.size = standingSize - Vector3.up * drop;
-        bodyBox.center = standingCenter - Vector3.up * (drop * 0.5f);// Подошва остаётся на той же высоте
+        bodyBox.center = standingCenter - Vector3.up * (drop * 0.5f);// Ноги остаются на земле
     }
 
     void FixedUpdate()
     {
         Quaternion rotation = Quaternion.Euler(0f, yaw, 0f);
-        rb.MoveRotation(rotation);// Разворачиваем тело по мышке
+        rb.MoveRotation(rotation);// Поворот игрока мышкой
         UpdateCrouch(rotation);
+        FindNearbyBlocks();
 
         float forward = moveInput.y;
         if (forward < 0f)
@@ -216,7 +300,7 @@ public class Movement : MonoBehaviour
 
         Vector3 targetVelocity = rotation * new Vector3(moveInput.x, 0f, forward) * speed;
         Vector3 velocity = rb.linearVelocity;
-        velocity.y = 0f;// Высоту меняют гравитация и прыжок
+        velocity.y = 0f;// Ходьба по X и Z
         Vector3 nextVelocity = Vector3.MoveTowards(velocity, targetVelocity, acceleration * Time.fixedDeltaTime);
 
         bool grounded = (jumpBuffer > 0f || isCrouching) && rb.linearVelocity.y < 0.4f &&
@@ -231,17 +315,16 @@ public class Movement : MonoBehaviour
             Vector3 landingVelocity = rb.linearVelocity;
             if (landingVelocity.y < 0f)
                 rb.linearVelocity = new Vector3(landingVelocity.x, 0f, landingVelocity.z);
-            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);// Прыгаем вверх
             jumpBuffer = 0f;
         }
 
         jumpBuffer = Mathf.Max(0f, jumpBuffer - Time.fixedDeltaTime);
     }
 
-    bool HasSupport(Vector3 position, Quaternion rotation)
+    bool HasSupport(Vector3 position, Quaternion rotation)// Есть ли земля под ногами
     {
-        // Текущая опора — вся подошва, даже если Shift зажали на самом краю
-        Vector3 half = new Vector3(standingSize.x * 0.5f, 0.002f, standingSize.z * 0.5f);
+        Vector3 half = new Vector3(standingSize.x * 0.5f - EdgeInset, 0.002f, standingSize.z * 0.5f - EdgeInset);
         return FloorUnder(position + rotation * standingCenter, half, rotation);
     }
 
@@ -250,7 +333,7 @@ public class Movement : MonoBehaviour
         Bounds sensor = groundBox.bounds;
         start.y = sensor.max.y + Physics.defaultContactOffset;
         return Physics.BoxCast(start, half, Vector3.down, out RaycastHit hit, rotation,
-            start.y - sensor.min.y, groundLayer, QueryTriggerInteraction.Ignore) && hit.normal.y >= 0.7f;
+            start.y - sensor.min.y, groundLayer, QueryTriggerInteraction.Ignore) && hit.distance > 0f && hit.normal.y >= 0.7f;
     }
 
     bool CanSneakTo(Vector3 position)
@@ -259,13 +342,12 @@ public class Movement : MonoBehaviour
             FloorUnder(position, sneakProbeHalf, DiagonalProbe);
     }
 
-    Vector3 StayOnBlock(Vector3 velocity)
+    Vector3 StayOnBlock(Vector3 velocity)// Ходьба по краю на Shift
     {
         Vector3 step = velocity * Time.fixedDeltaTime;
         if (CanSneakTo(rb.position + step))
             return velocity;
 
-        // У края можно идти вдоль него, в том числе по диагонали
         if (step.x != 0f && CanSneakTo(rb.position + Vector3.right * step.x))
             return Vector3.right * velocity.x;
         if (step.z != 0f && CanSneakTo(rb.position + Vector3.forward * step.z))

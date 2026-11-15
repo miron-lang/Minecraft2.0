@@ -3,8 +3,14 @@ using UnityEngine.InputSystem;
 
 public class Inventory : MonoBehaviour
 {
+    [Header("Hotbar")]
     public GameObject[] slots;// Слоты инвентаря
-    private GameObject currentSlot;// Ячейка под рамкой
+    [Range(0, 8)]
+    public int currentSlotIndex = 0;// Номер слота с нуля
+
+    private GameObject currentSlot;// Выбранный слот
+    private RectTransform selectionFrame;// Рамка выбранного слота
+
     public GameObject currentItem
     {
         get
@@ -14,10 +20,6 @@ public class Inventory : MonoBehaviour
             return null;
         }
     }
-
-    [Range(0, 8)]
-    public int currentSlotIndex = 0;// Номер слота с нуля
-    private RectTransform selectionFrame;// Рамка выбранного слота
 
     private void OnValidate()
     {
@@ -31,7 +33,7 @@ public class Inventory : MonoBehaviour
         UpdateHighlight();
     }
 
-    private void MakeRoomForFrame()
+    private void MakeRoomForFrame()// Место для рамки под хотбаром
     {
         var bar = transform as RectTransform;
         if (bar == null || bar.anchorMin.y != 0f || bar.anchorMax.y != 0f)
@@ -40,7 +42,7 @@ public class Inventory : MonoBehaviour
         Vector2 position = bar.anchoredPosition;
         float minY = SlotSelectionFrame.BorderWidth - bar.rect.yMin;
         if (position.y < minY)
-            bar.anchoredPosition = new Vector2(position.x, minY);// Чтобы рамку было видно снизу
+            bar.anchoredPosition = new Vector2(position.x, minY);
     }
 
     private void Update()
@@ -65,7 +67,7 @@ public class Inventory : MonoBehaviour
         currentSlot = slots[currentSlotIndex];// Берём слот по его номеру
     }
 
-    private int ReadSlotIndex()
+    private int ReadSlotIndex()// Выбор слота цифрой или колёсиком
     {
         var keyboard = Keyboard.current;
         if (keyboard != null)
@@ -83,11 +85,11 @@ public class Inventory : MonoBehaviour
         if (scroll == 0f)
             return index;
 
-        int step = scroll > 0f ? -1 : 1;// Колёсико вверх на слот назад, вниз на слот вперёд
-        return (index + step + slots.Length) % slots.Length;// С последнего слота на первый и обратно
+        int step = scroll > 0f ? -1 : 1;// Вверх на слот назад
+        return (index + step + slots.Length) % slots.Length;// Листаем слоты по кругу
     }
 
-    private void UpdateHighlight()
+    private void UpdateHighlight()// Ставим рамку на выбранный слот
     {
         if (currentSlot == null)
         {
@@ -105,7 +107,7 @@ public class Inventory : MonoBehaviour
             return;
 
         selectionFrame.gameObject.layer = currentSlot.layer;
-        selectionFrame.SetParent(currentSlot.transform, false);// Переносим рамку на выбранный слот
+        selectionFrame.SetParent(currentSlot.transform, false);
         selectionFrame.anchorMin = Vector2.zero;
         selectionFrame.anchorMax = Vector2.one;
         Vector2 border = Vector2.one * SlotSelectionFrame.BorderWidth;
