@@ -332,17 +332,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2e45b6a316f2d540a89f01689004cb8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WorldGenerator
-  sand: {fileID: 7121279597375393380, guid: deb14dd41f8a6414c8221f6e0a176c70, type: 3}
   sandStone: {fileID: 6713108335482333405, guid: 7318a9a0fa6faf24f8f19a27562b4693, type: 3}
-  grassBlock: {fileID: 748554284636780693, guid: a7f54e2f4e0b2e04b8a7e48b740f862f, type: 3}
   dirt: {fileID: 1314332513397140968, guid: 85ab33d42b565594596793bdf90cd5f3, type: 3}
   stone: {fileID: 1331989590216778126, guid: f43384bf9a686ba4694e5b842e4cd209, type: 3}
   deepslate: {fileID: 6511303766524954177, guid: 91088be3ca15fd94ab2873a44df4379f, type: 3}
   bedrock: {fileID: 1743947555482946706, guid: 8fa23b414424fd140ab319d5ba6793e9, type: 3}
   andesite: {fileID: 3504676949410126884, guid: 82aa4fa0f1f2b7b48a839d671f8501f4, type: 3}
   tuff: {fileID: 4812725082677434268, guid: 7e1ac5919a80b774fa5b0aa4e62bbf4a, type: 3}
-  xSize: 128
-  zSize: 128
+  grassBlock: {fileID: 748554284636780693, guid: a7f54e2f4e0b2e04b8a7e48b740f862f, type: 3}
+  sand: {fileID: 7121279597375393380, guid: deb14dd41f8a6414c8221f6e0a176c70, type: 3}
+  oakLeave: {fileID: 8266352363231381385, guid: 70d11692fb27f9441b875be51d50c5df, type: 3}
+  oakLog: {fileID: 2762503143693557287, guid: 9202776b7383f374799f8ee3ad1af374, type: 3}
+  xSize: 64
+  zSize: 64
 --- !u!4 &292901651
 Transform:
   m_ObjectHideFlags: 0
@@ -1620,22 +1622,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Movement
   walkingSpeed: 4.3
   runningSpeed: 5.6
-  crouchingSpeed: 1.4
   acceleration: 60
   backwardsMultiplayer: 0.8
   isRunning: 0
+  balanceUpdated: 1
+  jumpForce: 5
+  groundCheck: {fileID: 1076147401}
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 65
+  crouchingSpeed: 1.4
   head: {fileID: 2041131877361513674}
   mouseSensitivity: 150
   firstFace: {fileID: 330585543}
   thirdFace: {fileID: 1466698718}
   cameraPitch: 0
   isFirstFace: 1
-  jumpForce: 5
-  balanceUpdated: 1
-  groundCheck: {fileID: 1076147401}
-  groundLayer:
-    serializedVersion: 2
-    m_Bits: 65
   anim: {fileID: 1205778644}
 --- !u!4 &1205778647
 Transform:
@@ -1670,8 +1672,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Building
   firstCamera: {fileID: 330585545}
   secondCamera: {fileID: 1466698721}
-  hotBar: {fileID: 1281690040}
   cameraSkript: {fileID: 1205778646}
+  hotBar: {fileID: 1281690040}
   placeMaxDistance: 4
 --- !u!65 &1205778649
 BoxCollider:
