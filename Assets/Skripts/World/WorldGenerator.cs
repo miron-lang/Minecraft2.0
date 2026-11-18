@@ -29,6 +29,10 @@ public class WorldGenerator : MonoBehaviour
     public int xSize;// Рамземер мира по x
     public int zSize;// Рамземер мира по z
 
+    [Header("Lakes, rivers and oceans")]
+    public int waterLevelY = 2;
+    public GameObject water;
+
     private void Awake()
     {
         transform.position = new Vector3(xSize/2, 0, zSize/2);
@@ -45,15 +49,21 @@ public class WorldGenerator : MonoBehaviour
         blockHight = new int[xSize, zSize];
         isBlockDesert = new bool[xSize, zSize];
 
+        float biomeOffsetX = Random.Range(1000f, 10001f);
+        float biomeOffsetZ = Random.Range(1000f, 10001f);
+
+        float hightOffsetX = Random.Range(1000f, 10001f);
+        float hightOffsetZ = Random.Range(1000f, 10001f);
+
         for (int x = 0; x < xSize; x++)// Генераыя по x
         {
             for (int z = 0; z < zSize; z++)// На каждый x по zSize блоков по оси z
             {
                 float noise = Mathf.PerlinNoise(x * 0.12f, z * 0.12f);// Шум для высоты
-                float biomeNoise = Mathf.PerlinNoise(x * 0.015f + 10f, z * 0.015f + 20f);// Шум для биомов
+                float biomeNoise = Mathf.PerlinNoise(x * 0.015f + biomeOffsetX, z * 0.015f + biomeOffsetZ);// Шум для биомов
 
-                float plainsNoice = Mathf.PerlinNoise(x * 0.05f, z * 0.05f);// Шум для высоту полей
-                float duneNoice = Mathf.PerlinNoise(x * 0.035f + 30f, z * 0.09f + 40f);// Щум для высоты пустыни
+                float plainsNoice = Mathf.PerlinNoise(x * 0.05f + hightOffsetX, z * 0.05f + hightOffsetZ);// Шум для высоту полей
+                float duneNoice = Mathf.PerlinNoise(x * 0.035f + 300f + hightOffsetX, z * 0.09f + 500f + hightOffsetZ);// Щум для высоты пустыни
 
                 float plainsHeight = plainsNoice * 3f;// Просчитывоние высоты в полянах
                 float desetHeight = duneNoice * 7f;// Просчитывоние высоты в пустыни
@@ -64,7 +74,8 @@ public class WorldGenerator : MonoBehaviour
 
                 bool isDesert = biomeNoise > 0.5f;// Проверка биома
 
-                GameObject surface = isDesert ? sand : grassBlock;// Настройки зависимые от биома
+                bool isUnderWater = hight < waterLevelY;
+                GameObject surface = (isDesert||isUnderWater) ? sand : grassBlock;// Настройки зависимые от биома
                 GameObject underGround = isDesert ? sandStone : dirt;// Настройки зависимые от биома
 
                 blockHight[x, z] = hight;
@@ -81,6 +92,11 @@ public class WorldGenerator : MonoBehaviour
                 SpawnBlok(deepslate, x, hight - 8, z);
                 SpawnBlok(deepslate, x, hight - 9, z);
                 SpawnBlok(bedrock, x, hight - 10, z);// Канец ставление блоков
+
+                for (int y = hight + 1; y <= waterLevelY; y++)
+                {
+                    SpawnBlok(water, x, y, z);
+                }
             }
         }    
     }
@@ -94,7 +110,9 @@ public class WorldGenerator : MonoBehaviour
 
     void SpawnNormalTree(int x, int groundY, int z)
     {
-        for (int y = 1; y <= 3; y++)
+        int treeHight = Random.Range(2, 4);
+
+        for (int y = 1; y <= treeHight; y++)
         {
             SpawnBlok(oakLog, x, groundY + y, z);// Ставица брёвна
         }
@@ -103,22 +121,22 @@ public class WorldGenerator : MonoBehaviour
         {
             for (int dz = -1; dz <= 1; dz++)
             {
-                SpawnBlok(oakLeave, x + dx, groundY + 4, z + dz);// Ставица листва
+                SpawnBlok(oakLeave, x + dx, groundY + treeHight+1, z + dz);// Ставица листва
             }
         }
 
-        SpawnBlok(oakLeave, x, groundY + 5, z);// Листва сверху
+        SpawnBlok(oakLeave, x, groundY + treeHight+2, z);// Листва сверху
     }
     void GenerateTrees()
     {
-        for (int x = 3; x < xSize / 6; x += 6)
+        for (int areaX = 0; areaX + 6 <= xSize; areaX += 6)
         {
-            for (int z = 3; z < zSize / 6; z += 6)
+            for (int areaZ = 0; areaZ + 6 <= zSize; areaZ += 6)
             {
-                int currentX = Mathf.RoundToInt(Random.Range((x * 6) - 6/2, (x * 6) + 6/2));// X для дерва
-                int currentZ = Mathf.RoundToInt(Random.Range((z * 6) - 6/2, (z * 6) + 6/2));// Z для дерева
+                int x = areaX + Random.Range(1, 5);// X для дерва
+                int z = areaZ + Random.Range(1, 5);// Z для дерева
 
-                if (!isBlockDesert[currentX, currentZ]) SpawnNormalTree(currentX, blockHight[currentX, currentZ], currentZ);// Дерева спвница если не пустыня
+                if (!isBlockDesert[x, z] || blockHight[x, z] >= waterLevelY) SpawnNormalTree(x, blockHight[x, z], z);// Дерева спвница
             }
         }
     }
