@@ -343,8 +343,8 @@ MonoBehaviour:
   sand: {fileID: 7121279597375393380, guid: deb14dd41f8a6414c8221f6e0a176c70, type: 3}
   oakLeave: {fileID: 8266352363231381385, guid: 70d11692fb27f9441b875be51d50c5df, type: 3}
   oakLog: {fileID: 2762503143693557287, guid: 9202776b7383f374799f8ee3ad1af374, type: 3}
-  xSize: 64
-  zSize: 64
+  xSize: 128
+  zSize: 128
   waterLevelY: 2
   water: {fileID: 7687285572518757367, guid: 26f5447fb21976041b9c3e9b0b3f66ae, type: 3}
 --- !u!4 &292901651
